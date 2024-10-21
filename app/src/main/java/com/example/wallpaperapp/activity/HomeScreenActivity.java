@@ -223,6 +223,7 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
                 .filter(category -> category.getCategory().equals(lastCategoryName))
                 .findFirst()
                 .orElse(categoryModels.get(0));
+
 /*            CategoryModel newCategory = categoryModels.get(0);
             for (CategoryModel category : categoryModels) {
                 if (!category.getCategory().equals(lastCategoryName)) {
