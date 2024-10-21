@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -73,6 +74,24 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
         categoryModels.add(new CategoryModel("Flowers", "https://images.pexels.com/photos/1086178/pexels-photo-1086178.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
         categoryModels.add(new CategoryModel("Quotes", "https://images.pexels.com/photos/5993292/pexels-photo-5993292.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
         categoryModels.add(new CategoryModel("Rain", "https://images.pexels.com/photos/459451/pexels-photo-459451.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Cute", "https://images.pexels.com/photos/1767434/pexels-photo-1767434.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Romance", "https://images.pexels.com/photos/984944/pexels-photo-984944.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Cat", "https://images.pexels.com/photos/416160/pexels-photo-416160.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Moon", "https://images.pexels.com/photos/821718/pexels-photo-821718.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("4k Wallpaper", "https://images.pexels.com/photos/807598/pexels-photo-807598.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Pretty Background", "https://images.pexels.com/photos/4906295/pexels-photo-4906295.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Feeling Happy", "https://images.pexels.com/photos/6231809/pexels-photo-6231809.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Pursuit of Portraits", "https://images.pexels.com/photos/13446698/pexels-photo-13446698.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Phone Wallpapers", "https://images.pexels.com/photos/3560024/pexels-photo-3560024.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("The Sun", "https://images.pexels.com/photos/671549/pexels-photo-671549.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Fashion", "https://images.pexels.com/photos/2907034/pexels-photo-2907034.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Relax, Take It Easy", "https://images.pexels.com/photos/4926950/pexels-photo-4926950.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Into The Woods", "https://images.pexels.com/photos/19885719/pexels-photo-19885719.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Beautiful Landscapes", "https://images.pexels.com/photos/3934023/pexels-photo-3934023.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Vertical Landscapes", "https://images.pexels.com/photos/9407837/pexels-photo-9407837.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Cities", "https://images.pexels.com/photos/16154734/pexels-photo-16154734.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Books", "https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+
 
         LinearLayoutManager manager1 = new LinearLayoutManager(HomeScreenActivity.this, RecyclerView.HORIZONTAL, false);
         categoryRVAdapter = new CategoryRVAdapter(categoryModels, this, this);
@@ -111,96 +130,109 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                loadingPB.setVisibility(View.INVISIBLE);
                 try {
-                    loadingPB.setVisibility(View.GONE);
-
                     JSONArray photos = response.getJSONArray("photos");
                     for (int i = 0; i < photos.length(); i++) {
                         JSONObject photoObj = photos.getJSONObject(i);
-                        String imgUrl = photoObj.getJSONObject("src").getString("portrait");
-                        wallpaperArrayList.add(imgUrl);
+                        String imgObj = photoObj.getJSONObject("src").getString("portrait");
+                        wallpaperArrayList.add(imgObj);
                     }
                     wallpaperRVAdapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
+                    throw new RuntimeException(e);
                 }
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(HomeScreenActivity.this, "Fail to get data..", Toast.LENGTH_SHORT).show();
+                Toast.makeText(HomeScreenActivity.this, "Failed!", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() {
+            public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "cAuvy4zm5BwZVPURc4xoNgZdIoRlqczoWcFKqtAcgskw51tcxhnvBtzw");
                 return headers;
             }
+
         };
         queue.add(jsonObjectRequest);
-
     }
+
 
     private void getWallpapers() {
         wallpaperArrayList.clear();
         loadingPB.setVisibility(View.VISIBLE);
-        String url = "https://api.pexels.com/v1/curated?per_page=300&page=1";
 
-        RequestQueue queue = Volley.newRequestQueue(HomeScreenActivity.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                loadingPB.setVisibility(View.GONE);
-                try {
-                    JSONArray photos = response.getJSONArray("photos");
-                    for (int i = 0; i < photos.length(); i++) {
-                        JSONObject photoObj = photos.getJSONObject(i);
-                        String imgUrl = photoObj.getJSONObject("src").getString("portrait");
-                        wallpaperArrayList.add(imgUrl);
-                    }
-                    wallpaperRVAdapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(HomeScreenActivity.this, "Fail to get data..", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<>();
-                headers.put("Authorization", "cAuvy4zm5BwZVPURc4xoNgZdIoRlqczoWcFKqtAcgskw51tcxhnvBtzw");
-                return headers;
-            }
-        };
-        queue.add(jsonObjectRequest);
+        Collections.shuffle(categoryModels);
+        String firstCategory = categoryModels.get(0).getCategory();
+
+        getWallpapersByCategory(firstCategory);
     }
 
+/*
+        private void getWallpapers() {
+            wallpaperArrayList.clear();
+            loadingPB.setVisibility(View.VISIBLE);
+
+            String url = "https://api.pexels.com/v1/curated?per_page=300&page=1";
+
+            RequestQueue queue = Volley.newRequestQueue(HomeScreenActivity.this);
+            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    loadingPB.setVisibility(View.GONE);
+                    try {
+                        JSONArray photos = response.getJSONArray("photos");
+                        for (int i = 0; i < photos.length(); i++) {
+                            JSONObject photoObj = photos.getJSONObject(i);
+                            String imgUrl = photoObj.getJSONObject("src").getString("portrait");
+                            wallpaperArrayList.add(imgUrl);
+                        }
+                        wallpaperRVAdapter.notifyDataSetChanged();
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(HomeScreenActivity.this, "Fail to get data..", Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    HashMap<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "cAuvy4zm5BwZVPURc4xoNgZdIoRlqczoWcFKqtAcgskw51tcxhnvBtzw");
+                    return headers;
+                }
+            };
+            queue.add(jsonObjectRequest);
+        }
+*/
+
     private void getCategories() {
-
         SharedPreferences sharedPreferences = getSharedPreferences("WallpaperPrefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-
         String lastCategoryName = sharedPreferences.getString("lastCategory", "");
 
         Collections.shuffle(categoryModels);
-        CategoryModel newCategory = categoryModels.get(0);
-        for (CategoryModel category : categoryModels) {
-            if (!category.getCategory().equals(lastCategoryName)) {
-                newCategory = category;
-                break;
-            }
-        }
-
-        // Now, we have the new category to display
-//        displayCategory(newCategory);
+        CategoryModel newCategory = categoryModels.stream()
+                .filter(category -> category.getCategory().equals(lastCategoryName))
+                .findFirst()
+                .orElse(categoryModels.get(0));
+/*            CategoryModel newCategory = categoryModels.get(0);
+            for (CategoryModel category : categoryModels) {
+                if (!category.getCategory().equals(lastCategoryName)) {
+                    newCategory = category;
+                    break;
+                }
+            }*/
+        SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("lastCategory", lastCategoryName);
         editor.apply();
-
 
     }
 
