@@ -37,15 +37,19 @@ public class WallpaperRVAdapter extends RecyclerView.Adapter<WallpaperRVAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull MyViewholder holder, int position) {
-        String wallpaperPath = wallpaperList.get(position);
+// Checking Position Valid
+        if (position >= 0 && position < wallpaperList.size()) {
+            String wallpaperPath = wallpaperList.get(position);
 
-        Glide.with(context).load(wallpaperPath).override(Target.SIZE_ORIGINAL).into(holder.idIVWallpaper);
+            Glide.with(context).load(wallpaperPath)
+                    .override(Target.SIZE_ORIGINAL).into(holder.idIVWallpaper);
 
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, WallpaperActivity.class);
-            intent.putExtra("imgUrl", wallpaperPath);
-            context.startActivity(intent);
-        });
+            holder.itemView.setOnClickListener(v -> {
+                Intent intent = new Intent(context, WallpaperActivity.class);
+                intent.putExtra("imgUrl", wallpaperPath);
+                context.startActivity(intent);
+            });
+        }
     }
 
     @Override

@@ -47,6 +47,8 @@ public class CategoryRVAdapter extends RecyclerView.Adapter<CategoryRVAdapter.Vi
         }
         holder.itemView.setOnClickListener(v -> {
             categoryClickInterFace.onCategoryClick(position);
+
+            notifyDataSetChanged();
         });
     }
 

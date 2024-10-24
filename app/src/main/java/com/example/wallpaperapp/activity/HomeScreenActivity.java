@@ -122,11 +122,12 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
     }
 
     private void getWallpapersByCategory(String category) {
-        wallpaperArrayList.clear();
         loadingPB.setVisibility(View.VISIBLE);
         String url = "https://api.pexels.com/v1/search?query=" + category + "&per_page=300&page=1";
+        // Clear the list and notify the adapter
+        wallpaperArrayList.clear();
+        wallpaperRVAdapter.notifyDataSetChanged(); // Notify adapter before making the request
 
-        RequestQueue queue = Volley.newRequestQueue(HomeScreenActivity.this);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -159,60 +160,20 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
             }
 
         };
+        RequestQueue queue = Volley.newRequestQueue(HomeScreenActivity.this);
         queue.add(jsonObjectRequest);
     }
 
 
     private void getWallpapers() {
-        wallpaperArrayList.clear();
         loadingPB.setVisibility(View.VISIBLE);
+        wallpaperArrayList.clear();
+        wallpaperRVAdapter.notifyDataSetChanged();
 
         Collections.shuffle(categoryModels);
         String firstCategory = categoryModels.get(0).getCategory();
-
         getWallpapersByCategory(firstCategory);
     }
-
-/*
-        private void getWallpapers() {
-            wallpaperArrayList.clear();
-            loadingPB.setVisibility(View.VISIBLE);
-
-            String url = "https://api.pexels.com/v1/curated?per_page=300&page=1";
-
-            RequestQueue queue = Volley.newRequestQueue(HomeScreenActivity.this);
-            JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
-                @Override
-                public void onResponse(JSONObject response) {
-                    loadingPB.setVisibility(View.GONE);
-                    try {
-                        JSONArray photos = response.getJSONArray("photos");
-                        for (int i = 0; i < photos.length(); i++) {
-                            JSONObject photoObj = photos.getJSONObject(i);
-                            String imgUrl = photoObj.getJSONObject("src").getString("portrait");
-                            wallpaperArrayList.add(imgUrl);
-                        }
-                        wallpaperRVAdapter.notifyDataSetChanged();
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(HomeScreenActivity.this, "Fail to get data..", Toast.LENGTH_SHORT).show();
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    HashMap<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", "cAuvy4zm5BwZVPURc4xoNgZdIoRlqczoWcFKqtAcgskw51tcxhnvBtzw");
-                    return headers;
-                }
-            };
-            queue.add(jsonObjectRequest);
-        }
-*/
 
     private void getCategories() {
         SharedPreferences sharedPreferences = getSharedPreferences("WallpaperPrefs", MODE_PRIVATE);
@@ -240,6 +201,8 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
 
     @Override
     public void onCategoryClick(int position) {
+        wallpaperArrayList.clear();
+        loadingPB.setVisibility(View.VISIBLE);
         String category = categoryModels.get(position).getCategory();
         getWallpapersByCategory(category);
     }
