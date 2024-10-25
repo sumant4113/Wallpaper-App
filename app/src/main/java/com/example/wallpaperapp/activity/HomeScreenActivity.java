@@ -91,6 +91,8 @@ public class HomeScreenActivity extends AppCompatActivity implements CategoryRVA
         categoryModels.add(new CategoryModel("Vertical Landscapes", "https://images.pexels.com/photos/9407837/pexels-photo-9407837.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
         categoryModels.add(new CategoryModel("Cities", "https://images.pexels.com/photos/16154734/pexels-photo-16154734.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
         categoryModels.add(new CategoryModel("Books", "https://images.pexels.com/photos/1907785/pexels-photo-1907785.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Royal Enfield", "https://images.pexels.com/photos/14674648/pexels-photo-14674648.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
+        categoryModels.add(new CategoryModel("Japan race", "https://images.pexels.com/photos/8960867/pexels-photo-8960867.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500"));
 
 
         LinearLayoutManager manager1 = new LinearLayoutManager(HomeScreenActivity.this, RecyclerView.HORIZONTAL, false);
